@@ -1,0 +1,48 @@
+# Floyd-Warshall Algorithm for DAA
+# Time Complexity: O(V^3)
+# Space Complexity: O(V^2)
+
+def floyd_warshall(graph):
+    # Get the number of vertices
+    V = len(graph)
+    
+    # Initialize the distance matrix with the input graph
+    # dist[i][j] represents the shortest distance from vertex i to vertex j
+    dist = [row[:] for row in graph]
+    
+    # Iterate through each vertex as an intermediate vertex
+    for k in range(V):
+        for i in range(V):
+            for j in range(V):
+                # Update dist[i][j] if path through k is shorter
+                # Use a large number (INF) to represent infinity
+                if dist[i][k] != float('inf') and dist[k][j] != float('inf'):
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+    
+    return dist
+
+def print_solution(dist):
+    V = len(dist)
+    print("Shortest distances between every pair of vertices:")
+    for i in range(V):
+        row = []
+        for j in range(V):
+            if dist[i][j] == float('inf'):
+                row.append("INF")
+            else:
+                row.append(str(dist[i][j]))
+        print(" ".join(row))
+
+# Example Graph
+# Vertices: 0, 1, 2, 3
+# INF represents no direct edge
+INF = float('inf')
+graph = [
+    [0, 3, INF, 7],
+    [8, 0, 2, INF],
+    [5, INF, 0, 1],
+    [2, INF, INF, 0]
+]
+
+result = floyd_warshall(graph)
+print_solution(result)   
