@@ -1,0 +1,42 @@
+def tsp(cost):
+    n = len(cost)
+    # DP table: dp[mask][curr_city]
+    # mask represents the set of visited cities
+    dp = [[-1] * (1 << n) for _ in range(n)]
+
+    def total_cost(mask, curr):
+        # Base Case: If all cities visited (mask has all n bits set),
+        # return cost to return to starting city (0)
+        if mask == (1 << n) - 1:
+            return cost[curr][0]
+        
+        # If already computed, return stored value
+        if dp[curr][mask] != -1:
+            return dp[curr][mask]
+        
+        ans = float('inf')
+        
+        # Try visiting every unvisited city 'i'
+        for i in range(n):
+            if not (mask & (1 << i)):
+                # Update mask to include city i
+                new_mask = mask | (1 << i)
+                cost_via_i = cost[curr][i] + total_cost(new_mask, i)
+                ans = min(ans, cost_via_i)
+        
+        # Store result in DP table
+        dp[curr][mask] = ans
+        return ans
+
+    # Start from city 0, with only city 0 visited (mask = 1)
+    return total_cost(1, 0)
+
+# Example Cost Matrix
+cost = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
+
+print(f"Minimum Cost: {tsp(cost)}")   
